@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Questions</title>
+</head>
+<body>
+    <h1>Questions</h1>
+    
+    <!-- List of Existing Questions -->
+    <h2>Existing Questions:</h2>
+    <ul id="question-list">
+        {% for question in questions %}
+            <li>{{ question.query }} - {{ question.response }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Form to Ask a New Question -->
+    <h2>Ask a New Question:</h2>
+    <form method="post" id="question-form">
+        {% csrf_token %}
+        <label for="question">Question:</label>
+        <input type="text" name="query" id="question" required>
+        <button type="submit">Submit</button>
+    </form>
+    
+    <!-- Display Response -->
+    <h2>Response:</h2>
+    <p><strong>Response:</strong> <span id="response"></span></p>
+
+    <script>
+        // JavaScript function to handle form submission
+        document.getElementById('question-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const queryInput = document.getElementById('question');
+            const responseDisplay = document.getElementById('response');
+
+            const query = queryInput.value;
+
+            if (query) {
+                // Send a request to create a new question and get the response
+                fetch('/api/questions/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}' // Include the CSRF token
+                    },
+                    body: JSON.stringify({query: query}),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the response
+                    responseDisplay.textContent = data.new_question.response;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
