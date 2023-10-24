@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question Detail</title>
+</head>
+<body>
+    <h1>Question Detail</h1>
+    <p><strong>Query:</strong> {{ question.query }}</p>
+    <p><strong>Response:</strong> {{ question.response }}</p>
+    <a href="{% url 'question-list-create' %}">Back to Question List</a>
+</body>
+</html>
